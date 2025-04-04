@@ -1,23 +1,8 @@
-name: Deploy to EC2 IIS
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Upload files via SCP
-      uses: appleboy/scp-action@v0.1.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: deployuser
-        key: ${{ secrets.EC2_SSH_KEY }}
-        port: 22
-        source: "."
-        target: "C:/inetpub/wwwroot"
+- name: Verify SSH connectivity
+  run: |
+    echo "Testing SSH port..."
+    if ! timeout 5 bash -c "cat < /dev/null > /dev/tcp/18.61.41.238/22"; then
+      echo "::error::Port 22 not open!"
+      exit 1
+    fi
+    echo "SSH port is open"
