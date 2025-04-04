@@ -1,29 +1,23 @@
-name: 🚀 Deploy HTML Website to Windows Server
+name: Deploy to Windows EC2 IIS
 
 on:
   push:
-    branches:
-      - main  # Change if using a different branch
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 📥 Checkout Code
+    - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: 📂 Deploy Files to Windows Server via PowerShell
-      uses: appleboy/ssh-action@master
+    - name: Upload files via SCP
+      uses: appleboy/scp-action@v0.1.3
       with:
-        host: ${{ secrets.WINDOWS_HOST }}
-        username: ${{ secrets.WINDOWS_USERNAME }}
-        password: ${{ secrets.WINDOWS_PASSWORD }}
-        port: 5533
-        script: |
-          $source = "${{ github.workspace }}"
-          $target = "D:\Kalyanbabu\UPRERA\APCTD\Beta3"
-          Write-Host "Starting deployment..."
-          Copy-Item -Path "$source\*" -Destination "$target" -Recurse -Force
-          Write-Host "✅ Deployment completed successfully!"
-
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_SSH_USER }}
+        key: ${{ secrets.EC2_SSH_Password }}
+        port: 22
+        source: "."
+        target: "C:/inetpub/wwwroot"
