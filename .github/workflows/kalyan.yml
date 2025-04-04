@@ -13,13 +13,11 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: 🔌 Deploy to Windows Server using PowerShell (WinRM)
-        uses: gsoft-inc/pswinrm@v1
+      - name: 🔐 Copy files using SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
-          script: |
-            $source = "${{ github.workspace }}"
-            $destination = "${{ secrets.REMOTE_PATH }}"
-            robocopy "$source" "$destination" /MIR
+          source: "."
+          target: "${{ secrets.REMOTE_PATH }}"
