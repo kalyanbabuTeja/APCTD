@@ -12,12 +12,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Upload files via SCP
-      uses: appleboy/scp-action@v0.1.3
-      with:
-       host: ${{ secrets.EC2_HOST }}
-       username: deployuser
-       key: ${{ secrets.EC2_SSH_KEY }}
-       port: 22
-       source: "."
-       target: "C:/inetpub/wwwroot"
+    - name: Test SSH Connection
+      run: |
+       echo "Testing basic SSH connection..."
+       ssh -v -i ~/.ssh/id_rsa Administrator@18.61.41.238 echo "Connection successful"
