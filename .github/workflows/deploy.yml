@@ -1,0 +1,30 @@
+name: 🚀 Deploy HTML Website to Windows Server
+
+on:
+  push:
+    branches:
+      - main  # Change if your branch is different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Code from GitHub
+      uses: actions/checkout@v3
+
+    - name: 🚚 Deploy All Files to Windows Server
+      uses: jmarcher/action-winrm@v1.3
+      with:
+        host: ${{ secrets.WINDOWS_HOST }}
+        username: ${{ secrets.WINDOWS_USERNAME }}
+        password: ${{ secrets.WINDOWS_PASSWORD }}
+        port: 5533
+        protocol: http  # Use 'https' if you've set up SSL
+        shell: powershell
+        script: |
+          $source = "${{ github.workspace }}"
+          $target = "D:\Kalyanbabu\UPRERA\APCTD\Beta3"  # Change if using a different path
+          Write-Host "Copying all files from GitHub to $target..."
+          Copy-Item "$source\*" $target -Recurse -Force
+          Write-Host "✅ Deployment successful! No files were deleted."
