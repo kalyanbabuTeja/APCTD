@@ -11,14 +11,15 @@ jobs:
     
     steps:
     
-    - name: 🔐 Install SSH Key
+    - name: 🔐 Setup SSH
       run: |
-       mkdir -p ~/.ssh
-       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-       chmod 600 ~/.ssh/id_rsa
-       ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
-       shell: bash
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
 
+        # 👇 This line requires secrets.REMOTE_HOST to be set!
+        ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+        shell: bash
 
     - name: connect and pull
       run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
