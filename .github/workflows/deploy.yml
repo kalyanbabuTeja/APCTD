@@ -15,4 +15,4 @@ jobs:
     - name: Test SSH Connection
       run: |
        echo "Testing basic SSH connection..."
-       ssh -v -i ~/.ssh/id_rsa Administrator@18.61.41.238 echo "Connection successful"
+       ssh -v -i ~/.ssh/id_rsa Administrator@10.9.246.173 echo "Connection successful"
