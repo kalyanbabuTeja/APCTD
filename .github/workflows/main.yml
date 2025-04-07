@@ -5,22 +5,21 @@ on:
   workflow_dispatch:
   
 jobs:
-  run_pull:
-    name: run pull
+  deploy:
     runs-on: ubuntu-latest
-    
     steps:
-    
-    - name: 🛠️ Setup SSH
-      shell: bash
-      run: |
-       mkdir -p ~/.ssh
-       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-       chmod 600 ~/.ssh/id_rsa
-       ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
 
+      - name: 🔐 Setup SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
 
-    - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
-    - name: cleanup
-      run: rm -rf ~/.ssh
+      - name: 🚀 Deploy to Remote Server
+        run: |
+          ssh -i ~/.ssh/id_rsa user@${{ secrets.REMOTE_HOST }} "cd /path/to/your/site && git pull"
+
